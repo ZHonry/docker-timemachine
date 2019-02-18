@@ -17,6 +17,7 @@ RUN apk update && \
       bash \
       curl \
       libldap \
+      avahi \
       libgcrypt \
       python \
       dbus \
@@ -43,6 +44,8 @@ RUN apk update && \
       db-dev \
       dbus-dev \
       libevent-dev && \
+    sed -i 's/#enable-dbus=yes/enable-dbus=no/g' /etc/avahi/avahi-daemon.conf && \
+    sed -i 's/CREATE_MAIL_SPOOL=yes/CREATE_MAIL_SPOOL=no/g' /etc/default/useradd && \
     ln -s -f /bin/true /usr/bin/chfn && \
     cd /tmp && \
     curl -o netatalk-${netatalk_version}.tar.gz -L https://downloads.sourceforge.net/project/netatalk/netatalk/${netatalk_version}/netatalk-${netatalk_version}.tar.gz && \
@@ -80,6 +83,7 @@ ADD start_netatalk.sh /start_netatalk.sh
 ADD bin/add-account /usr/bin/add-account
 ADD supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 ADD afp.conf /etc/afp.conf
+ADD avahi/afpd.service /etc/avahi/services/afpd.service
 
 EXPOSE 548 636
 
